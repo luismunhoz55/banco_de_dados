@@ -1,5 +1,13 @@
 ## Setup do projeto
 
+```
+git clone https://github.com/luismunhoz55/banco_de_dados.git
+```
+
+Primeiro, temos que rodar os comandos que estão no `script.sql`
+
+Depois, vamos rodar o projeto
+
 No Windows, primeiro temos que instalar o php 8.3, composer e o laravel installer
 
 -   No Powershell, rodar:
