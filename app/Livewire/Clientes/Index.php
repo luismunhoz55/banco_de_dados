@@ -52,11 +52,11 @@ class Index extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'id_cliente', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'nome_empresa', 'label' => 'Nome da empresa', 'class' => 'w-64'],
+            ['key' => 'id_cliente', 'label' => '#', 'sortable' => false, 'class' => 'w-1'],
+            ['key' => 'nome_empresa', 'label' => 'Nome da empresa', 'sortable' => false, 'class' => 'w-64'],
             ['key' => 'cnpj', 'label' => 'CNPJ', 'sortable' => false],
-            ['key' => 'telefone', 'label' => 'Telefone', 'class' => 'w-20'],
-            ['key' => 'delete', 'label' => '', 'class' => 'w-20'],
+            ['key' => 'telefone', 'label' => 'Telefone', 'sortable' => false, 'class' => 'w-20'],
+            ['key' => 'delete', 'label' => '', 'sortable' => false, 'class' => 'w-20'],
         ];
     }
 
@@ -97,8 +97,6 @@ class Index extends Component
 
         $this->fill($client);
     }
-
-
 
     public function render()
     {

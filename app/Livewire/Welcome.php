@@ -12,6 +12,10 @@ class Welcome extends Component
 {
     use Toast;
 
+    public ?int $id_usuario = null;
+
+    public bool $is_editing = false;
+
     public string $search = '';
 
     public bool $drawer = false;
@@ -40,25 +44,53 @@ class Welcome extends Component
     }
 
     // Delete action
-    public function delete($id): void
+    public function delete($id_usuario): void
     {
-        $this->warning("Will delete #$id", 'It is fake.', position: 'toast-bottom');
+        $user = Usuario::where('id_usuario', $id_usuario)->first();
+
+        $user->delete();
+
+        $this->success("Usuário deletado com sucesso!", position: 'toast-bottom');
     }
 
     // Table headers
     public function headers(): array
     {
         return [
-            ['key' => 'id_usuario', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'nome', 'label' => 'Nome', 'class' => 'w-64'],
+            ['key' => 'id_usuario', 'label' => '#', 'sortable' => false, 'class' => 'w-1'],
+            ['key' => 'nome', 'label' => 'Nome', 'sortable' => false, 'class' => 'w-64'],
             ['key' => 'email', 'label' => 'E-mail', 'sortable' => false],
-            ['key' => 'tipo', 'label' => 'Tipo', 'class' => 'w-20'],
+            ['key' => 'tipo', 'label' => 'Tipo', 'sortable' => false, 'class' => 'w-20'],
         ];
     }
 
     public function users(): Collection
     {
-        return Usuario::all();
+        return Usuario::
+            when($this->search, function ($q) {
+                return $q->whereLike('nome', "%$this->search%")
+                    ->orWhereLike('email', "%$this->search%")
+                    ->orWhereLike('tipo', "%$this->search%");
+            })
+            ->get();
+    }
+
+    public function editUser(int $id_usuario)
+    {
+        $this->is_editing = true;
+
+        $this->id_usuario = $id_usuario;
+
+        $this->fillClient($this->id_cliente);
+
+        $this->drawer = true;
+    }
+
+    public function fillClient(int $id_usuario)
+    {
+        $user = Usuario::where('id_usuario', $id_usuario)->first();
+
+        $this->fill($user);
     }
 
     public function render()
