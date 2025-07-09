@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('nome_empresa');
             $table->string('cnpj');
             $table->string('telefone');
-            $table->softDeletes();
+            // $table->softDeletes();
         });
 
         Schema::create('categorias', function (Blueprint $table) {

@@ -3,6 +3,7 @@
 namespace App\Livewire\Clientes;
 
 use App\Models\Cliente;
+use GuzzleHttp\Client;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -10,6 +11,10 @@ use Mary\Traits\Toast;
 class Index extends Component
 {
     use Toast;
+
+    public ?int $id_cliente = null;
+
+    public bool $is_editing = false;
 
     public string $search = '';
 
@@ -28,11 +33,20 @@ class Index extends Component
     {
         $validated = $this->validate();
 
-        Cliente::create($validated);
+        $cliente = null;
+
+        if ($this->is_editing) {
+            $cliente = Cliente::where('id_cliente', $this->id_cliente)->first();
+            $cliente->update($validated);
+        } else {
+            $cliente = Cliente::create($validated);
+        }
+
+        $message = $this->is_editing == true ? "Cliente editado!" : "Cliente criado!";
 
         $this->reset();
 
-        $this->success("Cliente criado", position: 'toast-bottom');
+        $this->success($message, position: 'toast-bottom');
     }
 
     public function headers(): array
@@ -48,6 +62,24 @@ class Index extends Component
     public function clients()
     {
         return Cliente::all();
+    }
+
+    public function editClient(int $id_client)
+    {
+        $this->is_editing = true;
+
+        $this->id_cliente = $id_client;
+
+        $this->fillClient($this->id_cliente);
+
+        $this->drawer = true;
+    }
+
+    public function fillClient(int $id_cliente)
+    {
+        $client = Cliente::where('id_cliente', $id_cliente)->first();
+
+        $this->fill($client);
     }
 
     public function render()

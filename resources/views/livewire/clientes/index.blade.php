@@ -8,7 +8,12 @@
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$clients" />
+        <x-table :headers="$headers" :rows="$clients">
+            @scope('actions', $client)
+            <x-button icon="o-pencil" wire:click="editClient({{ $client['id_cliente'] }})"
+                class="btn-ghost btn-sm text-error" />
+            @endscope
+        </x-table>
     </x-card>
 
     <!-- FILTER DRAWER -->
