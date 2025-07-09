@@ -56,12 +56,28 @@ class Index extends Component
             ['key' => 'nome_empresa', 'label' => 'Nome da empresa', 'class' => 'w-64'],
             ['key' => 'cnpj', 'label' => 'CNPJ', 'sortable' => false],
             ['key' => 'telefone', 'label' => 'Telefone', 'class' => 'w-20'],
+            ['key' => 'delete', 'label' => '', 'class' => 'w-20'],
         ];
+    }
+
+    public function delete($id_cliente)
+    {
+        $client = Cliente::where('id_cliente', $id_cliente)->first();
+
+        $client->delete();
+
+        $this->success("Cliente deletado com sucesso!", position: 'toast-bottom');
     }
 
     public function clients()
     {
-        return Cliente::all();
+        return Cliente::
+            when($this->search, function ($q) {
+                return $q->whereLike('nome_empresa', "%$this->search%")
+                    ->orWhereLike('cnpj', "%$this->search%")
+                    ->orWhereLike('telefone', "%$this->search%");
+            })
+            ->get();
     }
 
     public function editClient(int $id_client)
@@ -81,6 +97,8 @@ class Index extends Component
 
         $this->fill($client);
     }
+
+
 
     public function render()
     {

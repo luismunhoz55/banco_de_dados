@@ -1,6 +1,9 @@
 <div>
     <!-- HEADER -->
     <x-header title="Clientes" separator progress-indicator>
+        <x-slot:middle class="!justify-end">
+            <x-input placeholder="Pesquisar..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
+        </x-slot:middle>
         <x-slot:actions>
             <x-button label="Adicionar" @click="$wire.drawer = true" responsive icon="o-plus" class="btn-primary" />
         </x-slot:actions>
@@ -11,6 +14,10 @@
         <x-table :headers="$headers" :rows="$clients">
             @scope('actions', $client)
             <x-button icon="o-pencil" wire:click="editClient({{ $client['id_cliente'] }})"
+                class="btn-ghost btn-sm text-error" />
+            @endscope
+            @scope('cell_delete', $client)
+            <x-button icon="o-trash" wire:click="delete({{ $client['id_cliente'] }})"
                 class="btn-ghost btn-sm text-error" />
             @endscope
         </x-table>
