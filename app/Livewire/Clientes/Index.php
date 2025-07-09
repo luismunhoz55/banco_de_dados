@@ -20,6 +20,8 @@ class Index extends Component
 
     public bool $drawer = false;
 
+    public array $sortBy = ['column' => 'nome_empresa', 'direction' => 'asc'];
+
     #[Rule('required')]
     public string $nome_empresa = '';
 

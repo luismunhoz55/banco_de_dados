@@ -20,7 +20,7 @@ class Welcome extends Component
 
     public bool $drawer = false;
 
-    public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
+    public array $sortBy = ['column' => 'nome', 'direction' => 'asc'];
 
     #[Rule('required')]
     public string $nome = '';
@@ -38,7 +38,14 @@ class Welcome extends Component
     {
         $validated = $this->validate();
 
-        Usuario::create($validated);
+        if ($this->is_editing) {
+            $user = Usuario::where('id_usuario', $this->id_usuario)->first();
+            $user->update($validated);
+        } else {
+            Usuario::create($validated);
+        }
+
+        $this->reset();
 
         $this->success("Usuário criado", position: 'toast-bottom');
     }
@@ -57,10 +64,11 @@ class Welcome extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'id_usuario', 'label' => '#', 'sortable' => false, 'class' => 'w-1'],
-            ['key' => 'nome', 'label' => 'Nome', 'sortable' => false, 'class' => 'w-64'],
+            ['key' => 'id_usuario', 'label' => '#', 'class' => 'w-1'],
+            ['key' => 'nome', 'label' => 'Nome', 'class' => 'w-64'],
             ['key' => 'email', 'label' => 'E-mail', 'sortable' => false],
             ['key' => 'tipo', 'label' => 'Tipo', 'sortable' => false, 'class' => 'w-20'],
+            ['key' => 'delete', 'label' => '', 'sortable' => false, 'class' => 'w-20'],
         ];
     }
 
@@ -81,12 +89,12 @@ class Welcome extends Component
 
         $this->id_usuario = $id_usuario;
 
-        $this->fillClient($this->id_cliente);
+        $this->fillUser($this->id_usuario);
 
         $this->drawer = true;
     }
 
-    public function fillClient(int $id_usuario)
+    public function fillUser(int $id_usuario)
     {
         $user = Usuario::where('id_usuario', $id_usuario)->first();
 
